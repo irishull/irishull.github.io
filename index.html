@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Iris MTG Counter V1 -->
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 50px;
+  background-color: #f0f0f0;
+  font-family: Garamond;
+  font-weight: bold;
+}
+
+#life {
+  width: 100%;
+  text-align: center;
+  font-size: 6rem;
+}
+
+#subtract {
+  position: fixed;
+  top: 0;
+  bottom: 50%;
+  left: 0;
+  right: 50%;
+}
+
+#add {
+  position: fixed;
+  top: 0;
+  bottom: 50%;
+  left: 50%;
+  right: 0;
+}
+
+#colorPicker {
+  position: fixed;
+  bottom: 10px;
+  width: 90%;
+}
+
+#counters {
+  position: fixed;
+  bottom: 60px;
+  width: 90%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.counter {
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid black;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.remove {
+  cursor: pointer;
+  font-size: 0.6em;
+  vertical-align: super;
+}
+</style>
+</head>
+<body>
+
+<div id="life">40</div>
+
+<div id="subtract" onclick="subtractLife()"></div>
+<div id="add" onclick="addLife()"></div>
+
+<div id="counters"></div>
+
+<button onclick="addCounter()">Add Counter</button>
+
+<input type="color" id="colorPicker" onchange="changeColor(this.value)">
+
+<script>
+var life = 40;
+var counters = [];
+
+function addLife() {
+  life++;
+  document.getElementById("life").innerHTML = life;
+}
+
+function subtractLife() {
+  if (life > 0) {
+    life--;
+    document.getElementById("life").innerHTML = life;
+  }
+}
+
+function changeColor(color) {
+  document.body.style.backgroundColor = color;
+}
+
+function addCounter() {
+  var counter = {value: '1/1'};
+  counters.push(counter);
+  updateCounters();
+}
+
+function updateCounters() {
+  var countersDiv = document.getElementById("counters");
+  countersDiv.innerHTML = '';
+  counters.forEach(function(counter, index) {
+    var counterDiv = document.createElement("div");
+    counterDiv.className = "counter";
+    var counterValue = document.createElement("div");
+    counterValue.innerHTML = counter.value;
+    var removeButton = document.createElement("div");
+    removeButton.className = "remove";
+    removeButton.innerHTML = "x";
+    removeButton.onclick = function(event) {
+      event.stopPropagation();
+      removeCounter(index);
+    };
+    counterDiv.appendChild(counterValue);
+    counterDiv.appendChild(removeButton);
+    counterDiv.onclick = function() {
+      editCounter(index);
+    };
+    countersDiv.appendChild(counterDiv);
+  });
+}
+
+function editCounter(index) {
+  var newValue = prompt("Enter new value for counter", counters[index].value);
+  if (newValue != null) {
+    if (newValue === '0') {
+      removeCounter(index);
+    } else {
+      counters[index].value = newValue;
+      updateCounters();
+    }
+  }
+}
+
+function removeCounter(index) {
+  counters.splice(index, 1);
+  updateCounters();
+}
+</script>
+
+</body>
+</html>
